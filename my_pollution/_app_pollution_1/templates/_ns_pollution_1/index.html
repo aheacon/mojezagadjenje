@@ -1,0 +1,232 @@
+{% extends "_ns_pollution_1/base.html" %}
+
+{% block title%}
+  Moje zagadenje
+{% endblock %}
+
+{% block body%}
+<div class="container">
+  Svi podaci odnose se na <a href="https://www.fhmzbih.gov.ba/" class=""> Federalni hidrometeoroloski zavod BiH</a>
+  <div class="row">
+
+    <div class="card col-md-3" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Granicne vrijednosti indeksa kvaliteta zraka</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Reference</h6>
+        <!-- <p> Something </p> -->
+        <table class="table" id="index_kvaliteta_zraka_general">
+          <thead>
+            <tr>
+              <th scope="col">Opis</th>
+              <th scope="col">Vrijednost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-dark">
+              <th scope="row">nema mjerenja</th>
+              <td>-</td>
+            </tr>
+            <tr class="table-success">
+              <th scope="row">dobar</th>
+              <td>0-50</td>
+            </tr>
+            <tr class="table-warning">
+              <th scope="row">umjeren</th>
+              <td>51-100</td>
+            </tr>
+            <tr style="background-color: orange;">
+              <th scope="row">nezdrav za osjetljive grupe</th>
+              <td>101-150</td>
+            </tr>
+            <tr style="background-color: red;">
+              <th scope="row">nezdrav </th>
+              <td>151-200</td>
+            </tr>
+            <tr style="background-color: blueviolet;">
+              <th scope="row">veoma nezdrav </th>
+              <td>201-300</td>
+            </tr>
+            <tr style="background-color: brown;">
+              <th scope="row">opasan</th>
+              <td>301-500</td>
+            </tr>
+          </tbody>
+        </table>
+        <a href="http://www.fhmzbih.gov.ba/latinica/ZRAK/AQ-index.php" class="card-link">AQI</a>
+        <a href="http://www.fhmzbih.gov.ba/latinica/ZRAK/AQI-satne.php" class="card-link">AQI satne</a>
+        <a href="http://www.fhmzbih.gov.ba/latinica/ZRAK/regulativa.php" class="card-link">Regulativa</a>
+        
+      </div> <!-- card-body -->
+    </div> <!-- card -->
+
+    <!-- Satne vrijednosti-->
+    <div class="col-md-9">
+      <h4 style="text-align:center"> Satne vrijednosti AQI: Zenica 
+      </h4>
+      <h5 style= "text-align: right;">
+        <a href="{{ url_grad }}"> Prognoza vremena za Zenica </a>
+      </h5>
+      <hr>
+      <div class="table-responsive" id="tbl_satne_vrijednosti">
+        <table class="table table-sm table-hover table-bordered"  id="index_kvaliteta_zraka_satne">
+          <thead>
+            <tr>
+              <h3> PROSJEČNE SATNE VRIJEDNOSTI POLUTANATA </h3>
+              Napomena: Sve jedince su mjerene u [<span>&#181;</span>g/m<sup>3</sup>]
+              <th  class="table-info" scope="col" rowspan="1">Lokacija</th>
+              <th  class="table-info" scope="col" rowspan="1">SO<sub>2</sub></th>
+              <th  class="table-dark" scope="col" rowspan="1">H<sub>2</sub>S</th>
+              <th  class="table-info" scope="col" rowspan="1">N0<sub>2</sub></th>
+              <th  class="table-info" scope="col" rowspan="1">NO<sub>x</sub></th>
+              <th  class="table-info" scope="col" rowspan="1">NO</th>
+              <th  class="table-info" scope="col" rowspan="1">CO</th>
+              <th  class="table-info" scope="col" rowspan="1">O<sub>3</sub></th>
+              <th  class="table-info" scope="col" rowspan="1">PM<sub>10</sub></th>
+              <th  class="table-info" scope="col" rowspan="1">PM<sub>2.5</sub></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for lokacija,value in aqi.items %}
+            <tr>
+              <!-- Rezultat scrappinga -->
+              <th  class="table-success" scope="col" rowspan="1">
+                {{lokacija}}
+              </th>
+              {% for parametar, val in value.0.items%}
+                {% if val %}
+                  {% if parametar == "so2" %}
+
+                    {% if val|add:"0" < 350 %} <!-- 350 Granicna vrijednost-->
+                      <th style="background:rgba(245, 229, 27, 1)"> {{val}} </th>
+
+                    {% elif val|add:"0" >= 350 and val|add:"0" < 365 %} <!-- Tolerantna 365-->
+                      <th style="background:pink"> {{val}} </th>
+                  
+                    {% elif val|add:"0" >= 365 and val|add:"0" < 500 %} <!-- 365Prag upozorenja 500-->
+                      <th style="background:orange"> {{val}} </th>
+                    
+                    {% elif val|add:"0" >= 500 %} <!-- Prag uzbune-->
+                      <th style="background: red"> {{val}} </th>
+                    {% else %} <!-- Never should be -->
+                      <th style="background:green"> {{val}} </th>
+                    {% endif %}
+
+                  {% elif parametar == "no2" %} <!-- no2--> 
+                    {% if val|add:"0" < 200 %} <!-- 200 Granicna vrijednost-->
+                    <th style="background:rgba(245, 229, 27, 1)"> {{val}} </th>
+                    {% elif val|add:"0" >= 200 and val|add:"0" < 210 %} <!-- Tolerantna 210-->
+                      <th style="background:pink"> {{val}} </th>
+                  
+                    {% elif val|add:"0" >= 365 and val|add:"0" < 400 %} <!-- 210 Prag upozorenja 400-->
+                      <th style="background:orange"> {{val}} </th>
+                    
+                    {% elif val|add:"0" >= 400 %} <!-- Prag uzbune-->
+                      <th style="background: red"> {{val}} </th>
+                    {% else %} <!-- Never should be -->
+                      <th style="background:green"> {{val}} </th>
+                    {% endif %}
+
+                    {% elif parametar == "o3" %} <!-- o3--> 
+                      {% if val|add:"0" < 120 %} <!-- 120 Granicna vrijednost-->
+                      <th style="background:rgba(245, 229, 27, 1)"> {{val}} </th>
+                      {% elif val|add:"0" >= 120 and val|add:"0" < 180 %} <!-- Tolerantna 180-->
+                        <th style="background:pink"> {{val}} </th>
+                    
+                      {% elif val|add:"0" >= 180 and val|add:"0" < 240 %} <!-- 180 Prag upozorenja 240-->
+                        <th style="background:orange"> {{val}} </th>
+                      
+                      {% elif val|add:"0" >= 240 %} <!-- Prag uzbune-->
+                        <th style="background: red"> {{val}} </th>
+                      {% else %} <!-- Never should be -->
+                        <th style="background:green"> {{val}} </th>
+                      {% endif %}
+
+                      {% elif parametar == "h2s" %} <!-- H2S--> 
+                        {% if val|add:"0" < 7 %} <!--  Granicna vrijednost-->
+                        <th style="background:rgba(245, 229, 27, 1)"> {{val}} </th>
+                        {% elif val|add:"0" >= 7 and val|add:"0" < 8 %} <!-- Tolerantna-->
+                          <th style="background:pink"> {{val}} </th>
+                      
+                        {% elif val|add:"0" >= 8 and val|add:"0" < 9 %} <!-- Prag upozorenja -->
+                          <th style="background:orange"> {{val}} </th>
+                        
+                        {% elif val|add:"0" >= 9 %} <!-- Prag uzbune nisam siguran jer ne pise na stranici-->
+                          <th style="background: red"> {{val}} </th>
+                        {% else %} <!-- Never should be -->
+                          <th style="background:green"> {{val}} </th>
+                        {% endif %}
+
+                  {% else %}
+                  <th style="background: blueviolet"> {{val}} </th>
+                  {% endif %} <!-- so2 -->
+                {% else %} <!-- empty value -->
+                <th class="table-dark" scope="col" rowspan="1"> </th>
+                {% endif %}
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <!--  Legenda zagadjenosti -->
+        <div class="table-responsive" id="tbl_satne_vrijednosti">
+          <table class="table table-sm table-hover table-bordered"  id="legend_aqi">
+            <thead>
+              <tr> 
+                <th style="background: yellow;" colspan="2"> Granicna vrijednost  </th>
+                <th style="background: pink;"  colspan="2"> Tolerantna vrijednost  </th>
+                <th style="background: orange;"  colspan="2"> Prag upozorenja  </th> 
+                <th style="background: red;"  colspan="2"> Prag uzbune </th>
+              </tr>
+            </thead>
+            <tr>
+              <th> so2</th>
+              <th> 350</th>
+              <th> so2</th>
+              <th> 365</th>
+              <th> so2</th>
+              <th> 365</th>
+              <th> so2</th>
+              <th> 500</th>
+            </tr>
+
+            <tr>
+              <th> no2</th>
+              <th> 200</th>
+              <th> no2</th>
+              <th> 210</th>
+              <th> no2</th>
+              <th> 210</th>
+              <th> no2</th>
+              <th> 400</th>
+            </tr>
+
+            <tr>
+              <th> h2s</th>
+              <th> 7</th>
+              <th> h2s</th>
+              <th> 8</th>
+              <th> h2s</th>
+              <th> -</th>
+              <th> h2s</th>
+              <th> -</th>
+            </tr>
+          </table>
+          Ostali parametri ?
+        </div>
+      </div> <!-- table AQI satni-->
+    </div> <!-- container satne vrijednosti-->
+  </div> <!-- row -->
+
+  <div class="row">
+    <h5> Alarm je događaj dobiven u slučaju da je koncentracija polutanata 
+        iznad dozvoljenih granica unutar uzastopna 3 sata! 
+    </h5>
+    <br>
+    <h5> 
+      Lista alarma:
+    </h5>
+
+  </div>
+</div> <!-- container full -->
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "_ns_pollution_1/base.html" %}
+
+{% block title%}
+  Dummy
+{% endblock %}
+
+{% block body%}
+<div class="container">
+  Dummy values
+  {% for so2 in table_so2%}
+    <span> {{so2.city}} </span> <span> {{so2.location}}</span> <span> {{so2.value}}</span>
+     <span>{{so2.date}}</span>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -579,3 +579,25 @@ In general, alternative to application server (uwsgi) is gunicorn.
 [nice one](https://www.devdungeon.com/content/how-deploy-django-nginx-and-uwsgi)
 [digital-ocean using init script](https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-uwsgi-and-nginx-on-ubuntu-14-04)
 [django-deployment](https://docs.djangoproject.com/en/3.0/howto/deployment/wsgi/uwsgi/)
+
+### 12) From deployment to locally
+- Copy `settings_shared` (from `my_config` local director) and create `settings.py` from `settings_anel.py`
+- Create virtual environment:
+- Install django
+- Install mysqlclient
+check for packages (dpkg -ls package): libmysqlclient-dev,(or libmariadbclient-dev/not working missing some dependecies), python3-dev (install with apt)
+
+(https://www.digitalocean.com/community/tutorials/how-to-use-mysql-or-mariadb-with-your-django-application-on-ubuntu-14-04)
+```
+python3 -m venv env && \
+source ./env/bin/activate && \
+pip3 install django &&  \
+pip install mysqlclient && \
+python3 -m pip install requests && \
+pip3 install beautifulsoup4 && \
+pip3 install selenium
+```
+- Run `./manage.py runserver` and go to localhost.
+- Finish with venv `deactivate`
+
+
